@@ -28,8 +28,6 @@ public class StrfController {
 
         return strfService.getNonMemberDetail(strfId);
     }
-
-
 }
 
 

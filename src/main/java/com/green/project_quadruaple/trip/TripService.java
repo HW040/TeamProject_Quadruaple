@@ -3,6 +3,7 @@ package com.green.project_quadruaple.trip;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.green.project_quadruaple.common.config.jwt.JwtUser;
 import com.green.project_quadruaple.common.config.security.AuthenticationFacade;
 import com.green.project_quadruaple.trip.model.PathInfoVo;
 import com.green.project_quadruaple.trip.model.PathType;
@@ -10,6 +11,8 @@ import com.green.project_quadruaple.trip.model.PathTypeVo;
 import com.green.project_quadruaple.trip.model.PubTransPathVo;
 import com.green.project_quadruaple.trip.model.req.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import com.green.project_quadruaple.common.config.constant.OdsayApiConst;
@@ -104,15 +107,21 @@ public class TripService {
     /*
     * 여행 상세 정보 불러우기 getTrip
     * */
-    public ResponseWrapper<TripDetailRes> getTrip(Long tripId, boolean signed) {
+    public ResponseWrapper<TripDetailRes> getTrip(Long tripId) {
         Long signedUserId = null;
-        if(signed) {
-            signedUserId = Optional.of(AuthenticationFacade.getSignedUserId()).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof JwtUser) {
+            signedUserId = AuthenticationFacade.getSignedUserId();
         }
+
+//        Long signedUserId = Optional.of(AuthenticationFacade.getSignedUserId()).get();
         ScheCntAndMemoCntDto scAndMcAndTripInfoDto = tripMapper.selScheduleCntAndMemoCnt(tripId);
+
         if(scAndMcAndTripInfoDto == null) {
             return new ResponseWrapper<>(ResponseCode.BAD_REQUEST.getCode() + " 여행이 존재하지 않음", null);
         }
+
         TripPeriodDto tripPeriod = tripMapper.selTripPeriod(tripId);
         if(tripPeriod == null) {
             return new ResponseWrapper<>(ResponseCode.SERVER_ERROR.getCode(), null);
@@ -207,6 +216,7 @@ public class TripService {
             nullDataWithDay.setSchedules(new ArrayList<>());
             resTripDetail.add(nullDataWithDay);
         }
+        log.info("trip detail = {}", resTripDetail);
 
         res.setDays(resTripDetail);
 
