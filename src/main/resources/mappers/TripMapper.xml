@@ -140,6 +140,7 @@
         LEFT JOIN strf_pic sp
             ON sp.strf_id = strf.strf_id
         WHERE sm.trip_id = #{tripId}
+        ORDER BY seq ASC
     </select>
 
     <resultMap id="scheduleForDay" type="com.green.project_quadruaple.trip.model.dto.TripDetailDto">
