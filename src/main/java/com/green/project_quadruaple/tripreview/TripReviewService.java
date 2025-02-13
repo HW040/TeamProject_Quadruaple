@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,6 +84,10 @@ public class TripReviewService {
         long userId = authenticationFacade.getSignedUserId(); // 현재 로그인한 유저 ID 가져오기
         return tripReviewMapper.getMyTripReviews(userId, orderType);
     }
+    public int getMyTripReviewsCount() {
+        long userId = authenticationFacade.getSignedUserId();
+        return tripReviewMapper.getMyTripReviewsCount(userId);
+    }
     // 모든 사용자의 여행기 조회
     public List<TripReviewGetDto> getAllTripReviews(String orderType, int pageNumber) {
         // OFFSET 계산
@@ -114,15 +119,13 @@ public class TripReviewService {
     }
     // 다른 사용자의 여행기 조회
     public List<TripReviewGetDto> getOtherTripReviews(long tripReviewId) {
-        Long userId = null;
+        Long userId = 0L; // 로그인 여부 확인 (nullable)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.getPrincipal() instanceof JwtUser) {
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             userId = AuthenticationFacade.getSignedUserId();
         }
-
-        // 여행기 조회수 삽입
-        if(userId != null) {
+        if (userId > 0) {
             tripReviewMapper.insTripReviewRecent(userId, tripReviewId);
         }
 
