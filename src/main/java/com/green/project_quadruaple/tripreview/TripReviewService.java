@@ -8,6 +8,9 @@ import com.green.project_quadruaple.tripreview.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -111,13 +114,18 @@ public class TripReviewService {
     }
     // 다른 사용자의 여행기 조회
     public List<TripReviewGetDto> getOtherTripReviews(long tripReviewId) {
-        long userId = authenticationFacade.getSignedUserId();
+        Long userId = 0L; // 로그인 여부 확인 (nullable)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // 여행기 조회수 삽입
-        tripReviewMapper.insTripReviewRecent(userId, tripReviewId);
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            userId = authenticationFacade.getSignedUserId();
+        }
+        if (userId > 0) {
+            tripReviewMapper.insTripReviewRecent(userId, tripReviewId);
+        }
 
         List<TripReviewGetDto> tripReviewGetDto = tripReviewMapper.getOtherTripReviewById(tripReviewId);
-        if (tripReviewGetDto == null) {
+        if (tripReviewGetDto == null || tripReviewGetDto.isEmpty()) {
             throw new RuntimeException("해당 여행기를 찾을 수 없습니다.");
         }
 
