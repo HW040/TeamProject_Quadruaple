@@ -3,6 +3,7 @@ package com.green.project_quadruaple.trip.model.res;
 import com.green.project_quadruaple.common.config.enumdata.ResponseCode;
 import com.green.project_quadruaple.common.model.ResultResponse;
 import com.green.project_quadruaple.trip.model.dto.TripDetailDto;
+import com.green.project_quadruaple.trip.model.dto.TripUserListDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,7 +23,7 @@ public class TripDetailRes {
     private String title;
     private String startAt;
     private String endAt;
-    private List<Long> tripUserIdList;
+    private List<TripUserListDto> tripUserIdList;
     private List<Long> tripLocationList;
     private List<TripDetailDto> days;
 }

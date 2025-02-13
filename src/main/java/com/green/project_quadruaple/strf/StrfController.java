@@ -24,7 +24,7 @@ public class StrfController {
 
     @GetMapping("member/non")
     @Operation(summary = "비회원 상품 조회")
-    public ResponseWrapper<GetNonDetail> getNonMemberDetail (@RequestParam("strf_id") Long strfId){
+    public ResponseWrapper<GetNonDetail> getNonMemberDetail(@RequestParam("strf_id") Long strfId){
 
         return strfService.getNonMemberDetail(strfId);
     }
