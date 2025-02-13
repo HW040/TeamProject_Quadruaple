@@ -84,9 +84,15 @@
 
     <select id="selTripUserList">
         SELECT
-            user_id
-        FROM trip_user
-        WHERE trip_id = #{tripId}
+            u.name AS name
+            , u.email AS email
+            , u.profile_pic AS profilePic
+        FROM trip t
+        JOIN trip_user tu
+            ON tu.trip_id = t.trip_id
+            AND t.trip_id = #{tripId}
+        JOIN `user` u
+            ON u.user_id = tu.user_id
     </select>
 
     <resultMap id="tripInfoResultMap" type="com.green.project_quadruaple.trip.model.dto.ScheCntAndMemoCntDto">

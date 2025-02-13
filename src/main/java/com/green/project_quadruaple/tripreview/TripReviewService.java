@@ -1,6 +1,7 @@
 package com.green.project_quadruaple.tripreview;
 
 import com.green.project_quadruaple.common.MyFileUtils;
+import com.green.project_quadruaple.common.config.jwt.JwtUser;
 import com.green.project_quadruaple.common.config.security.AuthenticationFacade;
 import com.green.project_quadruaple.trip.TripMapper;
 import com.green.project_quadruaple.trip.model.req.PostTripReq;
@@ -35,7 +36,7 @@ public class TripReviewService {
 
     // 여행기 등록
     public TripReviewPostRes postTripReview(List<MultipartFile> tripReviewPic, TripReviewPostReq req) {
-        req.setUserId(authenticationFacade.getSignedUserId());
+        req.setUserId(AuthenticationFacade.getSignedUserId());
         tripReviewMapper.insTripReview(req);
 
 
@@ -122,14 +123,14 @@ public class TripReviewService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            userId = authenticationFacade.getSignedUserId();
+            userId = AuthenticationFacade.getSignedUserId();
         }
         if (userId > 0) {
             tripReviewMapper.insTripReviewRecent(userId, tripReviewId);
         }
 
         List<TripReviewGetDto> tripReviewGetDto = tripReviewMapper.getOtherTripReviewById(tripReviewId);
-        if (tripReviewGetDto == null || tripReviewGetDto.isEmpty()) {
+        if (tripReviewGetDto == null) {
             throw new RuntimeException("해당 여행기를 찾을 수 없습니다.");
         }
 
@@ -138,7 +139,7 @@ public class TripReviewService {
 
     // 여행기 수정
     public int patchTripReview(List<MultipartFile> tripPic, TripReviewPatchDto dto) {
-        dto.setUserId(authenticationFacade.getSignedUserId());
+        dto.setUserId(AuthenticationFacade.getSignedUserId());
 
         int result = tripReviewMapper.updTripReview(dto);
         if (result == 0) {
@@ -192,7 +193,7 @@ public class TripReviewService {
 
     //여행기 삭제
     public int deleteTripReview(long tripReviewId) {
-        long signedUserId = authenticationFacade.getSignedUserId();
+        long signedUserId = AuthenticationFacade.getSignedUserId();
 
         TripReviewDeleteDto tripReviewDeleteDto = tripReviewMapper.selTripReviewByUserId(tripReviewId);
 
@@ -218,13 +219,13 @@ public class TripReviewService {
 
     // 여행기 추천
     public int insTripLike(TripLikeDto like) {
-        long userId = authenticationFacade.getSignedUserId();
+        long userId = AuthenticationFacade.getSignedUserId();
         like.setUserId(userId);
         return tripReviewMapper.insTripLike(like);
     }
 
     public int delTripLike(TripLikeDto like) {
-        long userId = authenticationFacade.getSignedUserId();
+        long userId = AuthenticationFacade.getSignedUserId();
         like.setUserId(userId);
         return tripReviewMapper.delTripLike(like);
     }
@@ -235,7 +236,7 @@ public class TripReviewService {
 
     // 여행기 스크랩
     public int copyTripReview(CopyInsertTripDto trip) {
-        long userId = authenticationFacade.getSignedUserId();
+        long userId = AuthenticationFacade.getSignedUserId();
         trip.setUserId(userId);
 
         // 1. tripReviewId와 tripId 유효성 검증

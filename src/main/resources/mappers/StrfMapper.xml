@@ -124,10 +124,11 @@
         b.title AS menuTitle, d.title AS amenityTitle,
         j.name AS reviewWriterName , j.profile_pic AS reviewWriterUserPic ,
         l.profile_pic AS hostProfilePic, l.name AS hostName , b.price AS menuPrice,
-        COUNT(DISTINCT h.review_id) AS reviewCnt,
-        <if test="rating != null">
-            AVG(h.rating) AS ratingAvg
-        </if>
+        COUNT(DISTINCT h.review_id) AS reviewCnt
+        , AVG(h.rating) AS ratingAvg
+<!--        <if test="rating != null">-->
+<!--            , AVG(h.rating) AS ratingAvg-->
+<!--        </if>-->
         FROM
         stay_tour_restaur_fest a
         LEFT JOIN menu b ON a.strf_id = b.strf_id
