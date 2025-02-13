@@ -21,6 +21,12 @@
     </insert>
 
     <!-- 여행기 조회 -->
+    <select id="getMyTripReviewsCount">
+        SELECT COUNT(*)
+          FROM trip_review
+         WHERE user_id = #{userId}
+    </select>
+
     <select id="getMyTripReviews" resultMap="tripReviewResultMap">
         SELECT A.trip_id, A.user_id, A.title, A.content,
         GROUP_CONCAT(distinct B.trip_review_pic ORDER BY B.trip_review_pic) AS trip_review_pics,

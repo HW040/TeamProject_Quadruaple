@@ -83,6 +83,10 @@ public class TripReviewService {
         long userId = authenticationFacade.getSignedUserId(); // 현재 로그인한 유저 ID 가져오기
         return tripReviewMapper.getMyTripReviews(userId, orderType);
     }
+    public int getMyTripReviewsCount() {
+        long userId = authenticationFacade.getSignedUserId();
+        return tripReviewMapper.getMyTripReviewsCount(userId);
+    }
     // 모든 사용자의 여행기 조회
     public List<TripReviewGetDto> getAllTripReviews(String orderType, int pageNumber) {
         // OFFSET 계산
