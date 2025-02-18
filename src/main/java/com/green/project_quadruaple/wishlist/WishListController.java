@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -28,10 +29,15 @@ public class WishListController {
 
     @GetMapping
     @Operation(summary = "찜 목록")
-    public ResponseEntity<?> getWishList(@RequestParam(value = "start_idx") int startIdx) {
-        ResponseWrapper<List<WishListRes>> wishList = wishListService.getWishList(startIdx);
+    public ResponseEntity<?> getWishList(@RequestParam(value = "start_idx") int startIdx,
+                                         @RequestParam(value = "orderType", required = false) String orderType,
+                                         @RequestParam(value = "startAt", required = false) String startAt,
+                                         @RequestParam(value = "endAt", required = false) String endAt
+    ) {
+        ResponseWrapper<List<WishListRes>> wishList = wishListService.getWishList(startIdx, orderType);
         return ResponseEntity.ok(wishList);
     }
+
 }
 
 
