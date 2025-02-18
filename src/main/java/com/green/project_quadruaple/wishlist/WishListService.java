@@ -18,6 +18,7 @@ public class WishListService {
     private final AuthenticationFacade authenticationFacade;
     private final WishListMapper wishlistMapper;
 
+
     @Value("${const.default-review-size}")
     private int size;
     private String category;
